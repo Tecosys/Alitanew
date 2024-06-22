@@ -1,4 +1,4 @@
-## Alexa Telegram Bot
+## Alexa Telegram Bot.
 Alexa is a feature-rich Telegram bot developed in Python using the Pyrogram library. It provides a range of functionalities and can be easily customized to suit specific needs.
 
 # Setup Instructions
