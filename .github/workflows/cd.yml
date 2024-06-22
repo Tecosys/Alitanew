@@ -35,16 +35,15 @@ jobs:
       env:
         SSH_HOST: ${{secrets.SSH_HOST}}
         SSH_USER: ${{secrets.SSH_USER}}
-        DOCKER_USERNAME: ${{secrets.DOCKER_USERNAME}}
       run: ssh $SSH_USER@$SSH_HOST 'docker pull wbavishek/alita:latest'
 
-    - name: Delete Old docker container
+    - name: Delete old Docker container
       env:
         SSH_HOST: ${{secrets.SSH_HOST}}
         SSH_USER: ${{secrets.SSH_USER}}
       run: ssh $SSH_USER@$SSH_HOST 'docker rm -f alita-container || true'
 
-    - name: Run Docker Container
+    - name: Run Docker container
       env:
         SSH_HOST: ${{secrets.SSH_HOST}}
         SSH_USER: ${{secrets.SSH_USER}}
