@@ -1,3 +1,5 @@
+
+
 name: CD Pipeline
 
 on:
@@ -7,44 +9,17 @@ on:
       - completed
 
 jobs:
-  deploy:
-    runs-on: ubuntu-latest
+
+  build:
+
+    runs-on: self-hosted
 
     steps:
-    - name: Install SSH Client
-      run: sudo apt-get install openssh-client
-
-    - name: Setup SSH
-      env:
-        SSH_PRIVATE_KEY: ${{secrets.SSH_PRIVATE_KEY}}
-        SSH_HOST: ${{secrets.SSH_HOST}}
-        SSH_USER: ${{secrets.SSH_USER}}
-      run: |
-        mkdir -p ~/.ssh
-        echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
-        chmod 600 ~/.ssh/id_rsa
-        ssh-keyscan $SSH_HOST >> ~/.ssh/known_hosts
-
-    - name: SSH and create directory
-      env:
-        SSH_HOST: ${{secrets.SSH_HOST}}
-        SSH_USER: ${{secrets.SSH_USER}}
-      run: ssh $SSH_USER@$SSH_HOST 'mkdir -p /home/ubuntu/deployments'
-
     - name: Pull Docker image
       env:
-        SSH_HOST: ${{secrets.SSH_HOST}}
-        SSH_USER: ${{secrets.SSH_USER}}
-      run: ssh $SSH_USER@$SSH_HOST 'docker pull wbavishek/alita:latest'
-
-    - name: Delete old Docker container
-      env:
-        SSH_HOST: ${{secrets.SSH_HOST}}
-        SSH_USER: ${{secrets.SSH_USER}}
-      run: ssh $SSH_USER@$SSH_HOST 'docker rm -f alita-container || true'
-
-    - name: Run Docker container
-      env:
-        SSH_HOST: ${{secrets.SSH_HOST}}
-        SSH_USER: ${{secrets.SSH_USER}}
-      run: ssh $SSH_USER@$SSH_HOST 'docker run -d --name alita-container -v /home/ubuntu/deployments:/app wbavishek/alita'
+          DOCKER_USERNAME: ${{secrets.DOCKER_USERNAME}}
+      run: sudo docker pull wbavishek/alita:latest
+    - name: Delete Old docker container
+      run: sudo docker rm -f alita-container || true
+    - name: Run Docker Container
+      run: sudo docker run -d --name alita-container wbavishek/alita
