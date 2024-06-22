@@ -1,0 +1,11 @@
+version: "3.10.7"
+services:
+  worker:
+    build: .
+    environment:
+      API_ID: $API_ID  # defaults to None
+      API_HASH: $API_HASH  # defaults to None
+      MONGO_URL: $MONGO_URL  # defaults to None
+      BOT_TOKEN: $BOT_TOKEN # Not mandatory
+      LOG_CHAT: $LOG_CHAT # Not mandatory
+      OKTETO_TOKEN: $OKTETO_TOKEN

@@ -1,0 +1,12 @@
+{
+  "name": "AlexaBot",
+  "description": "A Bot Based On Pyrogram.",
+  "keywords": [
+    "telegram",
+    "bot",
+    "plugin",
+    "productivity"
+  ],
+  "success_url": "google.com",
+  "stack": "container"
+ }
