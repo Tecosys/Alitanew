@@ -99,25 +99,27 @@ async def greet(c, m: Message):
         if m.chat.id in chat_ids:
             return
     
-    chat =await c.get_chat(m.chat.id)
-    chat_count=str(chat.members_count)
-    # if len(chat_count) <= 1:
-    #     return
-    # zero_check = "0" * (int(chat_count) - 1)
-    # print(zero_check)
-    # if not chat_count.endswith(zero_check):
-    #     print("kh")??????
-    #     return
+    chat = await c.get_chat(m.chat.id)
+    chat_count = str(chat.members_count)
+
     _col = await greeting_col.find_one({'chat': m.chat.id})
     if not _col:
-        print(_col)
+        logging.info("No greeting data found for chat: %s", m.chat.id)
         return
-    if _col.get('pack') == 3:
-        return await m.reply(_col.get('text').format(count=chat_count, chatname=m.chat.title))
-    img_ = prepare_img(chat_count, golden=_col.get('pack') == 1)
-    await m.reply_sticker(img_)
-    if os.path.exists(img_):
-        os.remove(img_)
+    
+    try:
+        if _col.get('pack') == 3:
+            return await m.reply(_col.get('text').format(count=chat_count, chatname=m.chat.title))
+        
+        img_ = prepare_img(chat_count, golden=_col.get('pack') == 1)
+        await m.reply_sticker(img_)
+        
+        if os.path.exists(img_):
+            os.remove(img_)
+    except OSError as e:
+        logging.error("OSError occurred: %s", e)
+    except Exception as e:
+        logging.error("Unexpected error: %s", e)
 
 
 module_desc = """When you have new members and you have achieved target members, you should celebrate! but who will send greeting for x number of users? No worries, This module is here to help you!"""

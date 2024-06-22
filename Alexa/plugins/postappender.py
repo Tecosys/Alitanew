@@ -1,3 +1,4 @@
+import pyrogram
 from Alexa import alexa_bot
 from pyrogram.types import Message, InlineKeyboardMarkup
 from pyrogram import filters
@@ -72,16 +73,19 @@ async def text_appender(c, m: Message):
                     new_text = text
                 return await edit_or_send_message(m, new_text, bttns)
 
-async def edit_or_send_message(m, text, bttns):
+async def edit_or_send_message(m, text, bttns=None):
     try:
         if bttns:
-            await m.edit(text, reply_markup=InlineKeyboardMarkup(bttns))
+            await m.edit_text(text, reply_markup=InlineKeyboardMarkup(bttns))
         else:
-            await m.edit(text)
+            await m.edit_text(text)
     except MessageNotModified:
         pass  # Message content is same, no need to edit
     except MessageIdInvalid:
-        pass
+        pass  # The message ID is invalid
+    except Exception as e:
+        print(f"Unexpected error: {e}")
+
 
 module_desc = """It is very difficult to edit posts everytime with channel username or any notice!
 This module can solve this problem! The bot will auto edit posts as you had configured it! Buttons are also supported (rose format)"""
