@@ -31,44 +31,32 @@ async def join_alert(client: Client, message: Message):
 
 
 
-@alexa_bot.on_message(filters.group, 3)
+@alexa_bot.on_message(filters.group,3)
 async def join_alert_(client: Client, message: Message):
     chat_id = message.chat.id
-    if not (val := await is_id_in(chat_id)):
-        if message.from_user is not None:  # Check if from_user is not None
-            re = await add_id(message.from_user.id, type_='group')
-        else:
-            print("Error: message.from_user is None")
+    if not (val:=await is_id_in(chat_id)):
+        re=await add_id(message.from_user.id, type_='group')
 
 
 
-
-
-@alexa_bot.on_message((filters.new_chat_members | filters.left_chat_member) & (filters.group | filters.channel), 0)
+@alexa_bot.on_message((filters.new_chat_members | filters.left_chat_member) & (filters.group | filters.channel),0)
 async def join_alert(client: Client, message: Message):
     chat_id = message.chat.id
-    
     if message.from_user is None:
         return await message.reply("This action cannot be performed for anonymous or system messages.")
-    
-    if not (val := await is_id_in(message.chat.id)):
+    if not (val:=await is_id_in(message.chat.id)):
         await add_id(message.chat.id, type_='channel' if message.chat.type == 'channel' else 'group')
-    
+
     if message.chat.type != 'channel' and message.new_chat_members and in_(client.myself.id, message.new_chat_members):
         bttn = [[InlineKeyboardButton('⚙️ Help Menu', url=help_url.format(client.myself.username))]]
         await message.reply("</b>Hi, Thank you for Adding me here. Please Go through tutorials for more information</b>", reply_markup=InlineKeyboardMarkup(bttn))
-    
-    if not (val := await is_id_in(message.chat.id)) and in_(client.myself.id, message.new_chat_members):
+    if not (val:=await is_id_in(message.chat.id)) and in_(client.myself.id, message.new_chat_members):
         await add_id(message.chat.id, type_='channel' if message.chat.type == 'channel' else 'group')
         await client.send_message(alexa_bot.digit_wrap(alexa_bot.config.LOG_CHAT), f'<b>New Chat</b> \n<b>Chat Username / ID :</b> <code>{message.chat.username or message.chat.id}</code> \n<b>Type :</b> <code>{message.chat.type.title()}</code>')
-
+    
     admin_cache_key = f"{chat_id}_admins"
-    
-    try:
-        admins = [admin.user async for admin in client.get_chat_members(chat_id, filter=enums.ChatMembersFilter.ADMINISTRATORS)]
-    except ChannelPrivate:
-        return await message.reply("Error: The channel/supergroup is private and not accessible.")
-    
+    admins = [admin.user async for admin in client.get_chat_members(chat_id, filter=enums.ChatMembersFilter.ADMINISTRATORS)]
+
     client.ADMIN_CACHE[admin_cache_key] = admins
     for admin in admins:
         await add_manager(chat_id, admin.id)
