@@ -1,0 +1,25 @@
+
+
+name: CD Pipeline
+
+on:
+  workflow_run:
+    workflows: ["CI Pipeline"]
+    types:
+      - completed
+
+jobs:
+
+  build:
+
+    runs-on: self-hosted
+
+    steps:
+    - name: Pull Docker image
+      env:
+          DOCKER_USERNAME: ${{secrets.DOCKER_USERNAME}}
+      run: sudo docker pull wbavishek/alita:latest
+    - name: Delete Old docker container
+      run: sudo docker rm -f alita-container || true
+    - name: Run Docker Container
+      run: sudo docker run -d --name alita-container wbavishek/alita
