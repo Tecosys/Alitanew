@@ -23,9 +23,9 @@ jobs:
       env:
         DOCKER_URL: ${{secrets.DOCKER_URL}}
         DOCKER_USERNAME: ${{secrets.DOCKER_USERNAME}}
-      run: docker build -t $DOCKER_URL/$DOCKER_USERNAME/alita .
+      run: docker build -t $DOCKER_URL/$DOCKER_USERNAME/alitanew/alita .
     - name: Push to Dockerhub
       env:
         DOCKER_URL: ${{secrets.DOCKER_URL}}
         DOCKER_USERNAME: ${{secrets.DOCKER_USERNAME}}
-      run: docker push $DOCKER_USERNAME/alita:latest
+      run: docker push $DOCKER_USERNAME/alitanew/alita:latest
