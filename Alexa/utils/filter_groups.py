@@ -1,9 +1,0 @@
-group_=1
-spam=2
-raid=3
-new_chat_member_=3
-captcha=5
-private_=6
-auto_del=7
-channel_=8
-nsfw=9
