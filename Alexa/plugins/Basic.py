@@ -11,7 +11,7 @@ from Alexa.utils.filter_groups import *
 from pyrogram import enums
 from Alexa.utils.manager_users import *
 from pyrogram import enums
-from pyrogram.errors import BadRequest, Forbidden
+from pyrogram.errors import BadRequest, Forbidden, ChannelPrivate
 import random
 from datetime import datetime,timedelta
 import requests
@@ -54,11 +54,11 @@ async def join_alert(client: Client, message: Message):
     if not (val := await is_id_in(message.chat.id)):
         await add_id(message.chat.id, type_='channel' if message.chat.type == 'channel' else 'group')
     
-    if message.chat.type != 'channel' and message.new_chat_members and in_(client.myself.id, message.new_chat_members):
-        bttn = [[InlineKeyboardButton('⚙️ Help Menu', url=help_url.format(client.myself.username))]]
-        await message.reply("</b>Hi, Thank you for Adding me here. Please Go through tutorials for more information</b>", reply_markup=InlineKeyboardMarkup(bttn))
+    if message.chat.type != 'channel' and message.new_chat_members and any(member.id == client.me.id for member in message.new_chat_members):
+        bttn = [[InlineKeyboardButton('⚙️ Help Menu', url=help_url.format(client.me.username))]]
+        await message.reply("Hi, Thank you for Adding me here. Please go through tutorials for more information", reply_markup=InlineKeyboardMarkup(bttn))
     
-    if not (val := await is_id_in(message.chat.id)) and in_(client.myself.id, message.new_chat_members):
+    if not (val := await is_id_in(message.chat.id)) and any(member.id == client.me.id for member in message.new_chat_members):
         await add_id(message.chat.id, type_='channel' if message.chat.type == 'channel' else 'group')
         await client.send_message(alexa_bot.digit_wrap(alexa_bot.config.LOG_CHAT), f'<b>New Chat</b> \n<b>Chat Username / ID :</b> <code>{message.chat.username or message.chat.id}</code> \n<b>Type :</b> <code>{message.chat.type.title()}</code>')
 
