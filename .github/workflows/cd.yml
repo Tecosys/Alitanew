@@ -18,8 +18,10 @@ jobs:
     - name: Pull Docker image
       env:
           DOCKER_USERNAME: ${{secrets.DOCKER_USERNAME}}
-      run: sudo docker pull wbavishek/alita:latest
+      run: sudo docker pull $DOCKER_USERNAME/alita:latest
     - name: Delete Old docker container
       run: sudo docker rm -f alita-container || true
     - name: Run Docker Container
-      run: sudo docker run -d --name alita-container wbavishek/alita
+      env:
+          DOCKER_USERNAME: ${{secrets.DOCKER_USERNAME}}
+      run: sudo docker run -d --name alita-container $DOCKER_USERNAME/alita
