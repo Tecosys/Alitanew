@@ -5,30 +5,27 @@ on:
     branches: [ "main" ]
 
 jobs:
+
   build:
+
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v3
-
-    - name: Login to Docker Hub
+    - uses: actions/checkout@v3
+    - name: Login Dockerhub
       env:
+        DOCKER_URL: ${{secrets.DOCKER_URL}}
         DOCKER_USERNAME: ${{secrets.DOCKER_USERNAME}}
         DOCKER_PASSWORD: ${{secrets.DOCKER_PASSWORD}}
-      run: docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD"
-
-    - name: Build Docker image
+      run: docker login $DOCKER_URL -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
+      
+    - name: Build the Docker image
       env:
-          DOCKER_USERNAME: ${{secrets.DOCKER_USERNAME}}
-      run: docker build -t $DOCKER_USERNAME/alita .
-
-    - name: Tag Docker image
+        DOCKER_URL: ${{secrets.DOCKER_URL}}
+        DOCKER_USERNAME: ${{secrets.DOCKER_USERNAME}}
+      run: docker build -t $DOCKER_URL/$DOCKER_USERNAME/alita .
+    - name: Push to Dockerhub
       env:
-          DOCKER_USERNAME: ${{secrets.DOCKER_USERNAME}}
-      run: docker tag $DOCKER_USERNAME/alita $DOCKER_USERNAME/alita:latest
-
-    - name: Push Docker image
-      env:
-          DOCKER_USERNAME: ${{secrets.DOCKER_USERNAME}}
+        DOCKER_URL: ${{secrets.DOCKER_URL}}
+        DOCKER_USERNAME: ${{secrets.DOCKER_USERNAME}}
       run: docker push $DOCKER_USERNAME/alita:latest
