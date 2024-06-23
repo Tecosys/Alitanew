@@ -28,4 +28,4 @@ jobs:
       env:
         DOCKER_URL: ${{secrets.DOCKER_URL}}
         DOCKER_USERNAME: ${{secrets.DOCKER_USERNAME}}
-      run: docker push $DOCKER_USERNAME/alitanew/alita:latest
+      run: docker push $DOCKER_URL/$DOCKER_USERNAME/alitanew/alita:latest
