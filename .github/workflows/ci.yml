@@ -16,13 +16,19 @@ jobs:
       env:
         DOCKER_USERNAME: ${{secrets.DOCKER_USERNAME}}
         DOCKER_PASSWORD: ${{secrets.DOCKER_PASSWORD}}
-      run: echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+      run: docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD"
 
     - name: Build Docker image
-      run: docker build -t wbavishek/alita .
+      env:
+          DOCKER_USERNAME: ${{secrets.DOCKER_USERNAME}}
+      run: docker build -t $DOCKER_USERNAME/alita .
 
     - name: Tag Docker image
-      run: docker tag wbavishek/alita wbavishek/alita:latest
+      env:
+          DOCKER_USERNAME: ${{secrets.DOCKER_USERNAME}}
+      run: docker tag $DOCKER_USERNAME/alita $DOCKER_USERNAME/alita:latest
 
     - name: Push Docker image
-      run: docker push wbavishek/alita:latest
+      env:
+          DOCKER_USERNAME: ${{secrets.DOCKER_USERNAME}}
+      run: docker push $DOCKER_USERNAME/alita:latest
